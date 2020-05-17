@@ -21,7 +21,7 @@ def get_all_posts():
     return global_posts_dict
 
 
-# this function adds the comments as an array to post num key in global post_comments dict
+# adds comments as an array to post num key for 1-10 in global post_comments dict
 @app.before_first_request
 def get_comments():
     for n in range(1, 11):
@@ -32,6 +32,14 @@ def get_comments():
             current_comment = Comment(i['postId'], i['id'], i['name'], i['email'], i['body'])
             post_comments[i['postId']].append(current_comment)
     return post_comments
+
+
+# appends the comments as an array to each post item in global_posts_dict
+@app.before_first_request
+def add_comments_to_post_info():
+    for n in range(1, 11):
+        global_posts_dict.get(n).update({'comments': post_comments[n]})
+    return global_posts_dict
 
 
 if __name__ == "__main__":
