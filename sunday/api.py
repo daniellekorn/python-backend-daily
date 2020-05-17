@@ -17,8 +17,7 @@ def get_all_posts():
     response_data = get_posts.json()
     for post in response_data:
         current_post = JsonablePost(post, created_at())
-        global_posts_dict[post['id']] = current_post.return_as_obj()
-    print(global_posts_dict)
+        global_posts_dict[post['id']] = current_post.to_json()
 
 
 # function to generate random recent date for realistic post creation time
