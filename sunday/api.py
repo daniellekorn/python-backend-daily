@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 import requests
 import random
 
-app = Flask(__name__)
 
+app = Flask(__name__)
 
 global_posts_dict = {}
 
@@ -24,7 +24,7 @@ def created_at():
     end = datetime.now()
     start = end - timedelta(weeks=30)
     random_date = start + (end - start) * random.random()
-    str_date = random_date.strftime('%m/%d/%Y')
+    str_date = random_date.strftime('%m/%d/%Y %H:%M:%S')
     return str_date
 
 
