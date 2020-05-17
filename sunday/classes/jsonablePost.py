@@ -4,8 +4,8 @@ from .extendedPost import ExtendedPost
 
 class JsonablePost(ExtendedPost):
 
-    def __init__(self, user_id, post_id, title, body, created_at):
-        super().__init__(user_id, post_id, title, body, created_at)
+    def __init__(self, post, created_at):
+        super().__init__(post, created_at)
 
     def return_as_obj(self):
         return self.__dict__
