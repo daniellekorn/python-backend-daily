@@ -49,21 +49,21 @@ def get_posts():
 
 @app.route("/posts/<post_id>")
 def get_post_by_id(post_id):
-    return app.response_class(response=json.dumps(global_posts_dict[int(post_id)]), status=200,
+    posts = global_posts_dict[int(post_id)]
+    return app.response_class(response=json.dumps(posts), status=200,
                               mimetype='application/json')
 
 
 @app.route("/posts/<post_id>/comments")
 def get_post_comments(post_id):
-    return app.response_class(response=json.dumps(global_posts_dict[int(post_id)]['comments']), status=200,
-                              mimetype='application/json')
+    comments = global_posts_dict[int(post_id)]['comments']
+    return app.response_class(response=json.dumps(comments), status=200, mimetype='application/json')
 
 
 @app.route("/posts/userId/<user_id>")
 def get_single_users_posts(user_id):
-    wanted_posts = [global_posts_dict[n] for n in global_posts_dict if global_posts_dict[n]['user_id'] == int(user_id)]
-    return app.response_class(response=json.dumps(wanted_posts), status=200,
-                              mimetype='application/json')
+    user_posts = [global_posts_dict[n] for n in global_posts_dict if global_posts_dict[n]['user_id'] == int(user_id)]
+    return app.response_class(response=json.dumps(user_posts), status=200, mimetype='application/json')
 
 
 if __name__ == "__main__":
