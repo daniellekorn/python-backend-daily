@@ -8,7 +8,7 @@ class JsonablePost(ExtendedPost):
         super().__init__(user_id, post_id, title, body, created_at)
 
     def __repr__(self):
-        return self.__dict__
+        return str(self.__dict__)
 
     def to_json(self):
         return json.dumps(self.__dict__)
