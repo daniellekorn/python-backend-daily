@@ -8,7 +8,7 @@ import requests
 app = Flask(__name__)
 
 global_posts_dict = {}
-post_comments = []
+post_comments = {}
 
 
 @app.before_first_request
@@ -21,19 +21,17 @@ def get_all_posts():
     return global_posts_dict
 
 
-# this function adds the comments as an array to each post item from 1-10
+# this function adds the comments as an array to post num key in global post_comments dict
 @app.before_first_request
-def add_comments_to_post_info():
+def get_comments():
     for n in range(1, 11):
+        post_comments.update({n: []})
         comments = requests.get('https://jsonplaceholder.typicode.com/posts/' + str(n) + '/comments')
         response_data = comments.json()
-        post = []
         for i in response_data:
             current_comment = Comment(i['postId'], i['id'], i['name'], i['email'], i['body'])
-            post.append(current_comment)
-        post_comments.append(post)
-        global_posts_dict.get(n).update({'comments': post})
-    return global_posts_dict
+            post_comments[i['postId']].append(current_comment)
+    return post_comments
 
 
 if __name__ == "__main__":
