@@ -1,6 +1,6 @@
 from flask import Flask, json
 from sunday.classes.jsonablePost import JsonablePost
-from sunday.classes.basePost import BasePost
+from datetime import datetime
 import requests
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ def get_all_posts():
     get_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
     response_data = get_posts.json()
     for i in response_data:
-        new_item = BasePost(i['userId'], i['id'], i['title'], i['body'])
+        new_item = JsonablePost(i['userId'], i['id'], i['title'], i['body'], datetime.now())
         print(new_item)
 
 
