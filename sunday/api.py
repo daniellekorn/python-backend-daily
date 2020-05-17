@@ -1,35 +1,18 @@
 from flask import Flask, json
+from sunday.classes.jsonablePost import JsonablePost
+from sunday.classes.basePost import BasePost
 import requests
 
 app = Flask(__name__)
 
 
-# generic reusable function for translating get request to json
-def get_json(url):
-    request = requests.get(url)
-    response_data = request.json()
-    response = app.response_class(response=json.dumps(response_data), status=200, mimetype='application/json')
-    return response
-
-
-@app.route("/posts")
-def get_posts():
-    return get_json('https://jsonplaceholder.typicode.com/posts')
-
-
-@app.route("/posts/<post_id>")
-def get_post_by_id(post_id):
-    return get_json('https://jsonplaceholder.typicode.com/posts/' + post_id)
-
-
-@app.route("/posts/<post_id>/comments")
-def get_post_comments(post_id):
-    return get_json('https://jsonplaceholder.typicode.com/posts/' + post_id + '/comments')
-
-
-@app.route("/users/<user_id>")
-def get_single_users_posts(user_id):
-    return get_json('https://jsonplaceholder.typicode.com/users/' + user_id)
+@app.before_first_request
+def get_all_posts():
+    get_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
+    response_data = get_posts.json()
+    for i in response_data:
+        new_item = BasePost(i['userId'], i['id'], i['title'], i['body'])
+        print(new_item)
 
 
 if __name__ == "__main__":
