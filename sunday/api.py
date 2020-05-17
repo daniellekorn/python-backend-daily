@@ -27,9 +27,9 @@ def get_post_comments(post_id):
     return get_json('https://jsonplaceholder.typicode.com/posts/' + post_id + '/comments')
 
 
-@app.route("/users/<user_id>")
+@app.route("/posts/userId/<user_id>")
 def get_single_users_posts(user_id):
-    return get_json('https://jsonplaceholder.typicode.com/users/' + user_id)
+    return get_json('https://jsonplaceholder.typicode.com/posts?userId=' + user_id)
 
 
 if __name__ == "__main__":
