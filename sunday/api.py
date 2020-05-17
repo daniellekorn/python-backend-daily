@@ -15,17 +15,16 @@ def get_all_posts():
     get_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
     response_data = get_posts.json()
     for i in response_data:
-        current_post = JsonablePost(i['userId'], i['id'], i['title'], i['body'], random_date())
-        post_instance = ({i['id']: current_post.return_as_obj()})
-        global_posts_dict.update(post_instance)
+        current_post = JsonablePost(i['userId'], i['id'], i['title'], i['body'], created_at())
+        global_posts_dict[i['id']] = current_post.return_as_obj()
     print(global_posts_dict)
 
 
-def random_date():
+def created_at():
     end = datetime.now()
     start = end - timedelta(weeks=30)
-    date = start + (end - start) * random.random()
-    str_date = date.strftime('%m/%d/%Y')
+    random_date = start + (end - start) * random.random()
+    str_date = random_date.strftime('%m/%d/%Y')
     return str_date
 
 
