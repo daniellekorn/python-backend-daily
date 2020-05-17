@@ -13,8 +13,8 @@ post_comments = {}
 
 @app.before_first_request
 def get_all_posts():
-    get_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
-    response_data = get_posts.json()
+    req_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
+    response_data = req_posts.json()
     for post in response_data:
         current_post = JsonablePost(post, created_at())
         global_posts_dict[post['id']] = current_post.return_as_obj()
@@ -40,6 +40,30 @@ def add_comments_to_post_info():
     for n in range(1, 11):
         global_posts_dict.get(n).update({'comments': post_comments[n]})
     return global_posts_dict
+
+
+@app.route("/posts")
+def get_posts():
+    return app.response_class(response=json.dumps(global_posts_dict), status=200, mimetype='application/json')
+
+
+@app.route("/posts/<post_id>")
+def get_post_by_id(post_id):
+    return app.response_class(response=json.dumps(global_posts_dict[int(post_id)]), status=200,
+                              mimetype='application/json')
+
+
+@app.route("/posts/<post_id>/comments")
+def get_post_comments(post_id):
+    return app.response_class(response=json.dumps(global_posts_dict[int(post_id)]['comments']), status=200,
+                              mimetype='application/json')
+
+
+@app.route("/posts/userId/<user_id>")
+def get_single_users_posts(user_id):
+    wanted_posts = [global_posts_dict[n] for n in global_posts_dict if global_posts_dict[n]['user_id'] == int(user_id)]
+    return app.response_class(response=json.dumps(wanted_posts), status=200,
+                              mimetype='application/json')
 
 
 if __name__ == "__main__":
