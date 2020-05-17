@@ -14,9 +14,9 @@ def get_all_posts():
     get_posts = requests.get('https://jsonplaceholder.typicode.com/posts')
     response_data = get_posts.json()
     for i in response_data:
-        new_item = JsonablePost(i['userId'], i['id'], i['title'], i['body'], datetime.now())
-        post_dict_with_id_key = ({i['id']: new_item})
-        global_post_dict.update(post_dict_with_id_key)
+        current_post = JsonablePost(i['userId'], i['id'], i['title'], i['body'], datetime.now())
+        post_instance = ({i['id']: current_post.return_as_obj()})
+        global_post_dict.update(post_instance)
 
     print(global_post_dict)
 
