@@ -31,13 +31,13 @@ def add_instrument():
 def add_user():
     content = request.form
     new_user = User(content.get('name'), content.get('title'), content.get('instruments'))
-    instruments[len(users)] = new_user
+    users[len(users)] = new_user
     response = {"new_user": new_user}
     return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
 
 
 @app.route("/instrument/<instrument_id>/user/<user_id>", methods=['POST'])
-def assign_instrument_to_user():
+def assign_instrument_to_user(instrument_id, user_id):
     pass
 
 
