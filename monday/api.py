@@ -21,7 +21,7 @@ def get_all_users():
 @app.route("/instruments", methods=['POST'])
 def add_instrument():
     content = request.form
-    new_instrument = Instrument(content.get('name'))
+    new_instrument = Instrument(content.get('name'), content.get('model'), content.get('type'))
     instruments[len(instruments)] = new_instrument
     response = {"new_instrument": new_instrument}
     return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
