@@ -13,10 +13,14 @@ def get_all_instruments():
     return jsonify({'instruments': instruments})
 
 
-@app.route("/users")
-def get_all_users():
-    print(users)
-    return jsonify({'users': users})
+@app.route("/instruments/<instrument_id>")
+def get_instrument_by_id(instrument_id):
+    return jsonify({'instrument': instruments[instrument_id]})
+
+
+@app.route("/instruments/user/<user_id>")
+def get_all_instruments_for_user(user_id):
+    return jsonify({'users_instruments': users[user_id]['instruments']})
 
 
 @app.route("/instruments", methods=['POST'])
@@ -26,6 +30,17 @@ def add_instrument():
     instruments[new_instrument.get('id_num')] = new_instrument
     response = {"new_instrument": new_instrument}
     return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+
+
+@app.route("/users")
+def get_all_users():
+    print(users)
+    return jsonify({'users': users})
+
+
+@app.route("/users/<user_id>")
+def get_user_by_id(user_id):
+    return jsonify({'user': users[user_id]})
 
 
 @app.route("/users", methods=['POST'])
