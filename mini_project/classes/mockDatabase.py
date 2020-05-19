@@ -4,7 +4,7 @@ class MockDatabase:
         self.data = {}
 
     def add_item(self, obj):
-        self.data[obj.get('id_num')] = obj
+        self.data[obj.get('_id_num')] = obj
         return self.data
 
     def delete_item(self, obj_id):
@@ -22,6 +22,10 @@ class MockDatabase:
     def delete_sub_item(self, obj_id, field, sub_item):
         self.data[obj_id][field].remove(sub_item)
         return self.data
+
+    # def persist_in_data(self):
+    #     with open('mydata.json', 'w') as f:
+    #         json.dump(team, f)
 
 
 Users = MockDatabase()

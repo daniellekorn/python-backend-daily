@@ -56,7 +56,7 @@ def register_instrument():
         Instruments.add_item(new_instrument)
         user_id = Validator.get_user_id_by_name(user_name)
         if user_id:
-            assign_instrument_to_user(new_instrument.get('id_num'), user_id)
+            assign_instrument_to_user(new_instrument.get('_id_num'), user_id)
             return app.response_class(response=json.dumps({'updated profile': Users.data[user_id]}), status=200,
                                       mimetype='application/json')
         return "Username invalid: only registered users can submit instruments"

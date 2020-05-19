@@ -5,4 +5,4 @@ class User(dict):
 
     def __init__(self, username, email, password, instruments):
         dict.__init__(self, username=username, email=email, password=password, instruments=instruments,
-                      id_num=random_string())
+                      _id_num=random_string())
