@@ -49,10 +49,10 @@ def get_or_add_users():
 def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
-        new_user = User(form.username.data, form.email.data, form.password.data)
+        new_user = User(form.username.data, form.email.data, form.password.data, {})
         users[new_user.get('user_id')] = new_user
         flash('Thanks for registering')
-        return redirect(url_for('login'))
+        return "success"
     return render_template('register.html', form=form)
 
 
@@ -72,5 +72,6 @@ def assign_instrument_to_user(instrument_id, user_id):
 
 
 if __name__ == "__main__":
+    app.secret_key = b'testing'
     app.run()
 
