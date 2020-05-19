@@ -13,7 +13,7 @@ instruments = {}
 def get_or_add_instruments():
     if request.method == "POST":
         content = request.form
-        new_instrument = Instrument(content.get('name'), content.get('model'), content.get('type'))
+        new_instrument = Instrument(content.get('model'), content.get('type'))
         instruments[new_instrument.get('id_num')] = new_instrument
         response = {"new_instrument": new_instrument}
         return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
