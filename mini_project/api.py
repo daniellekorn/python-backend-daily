@@ -168,7 +168,7 @@ def get_instrument_image(instrument_id, img_num):
 
 
 # Noam mentioned that search functionality is best to do with actual search box form or query params, not path params
-# I hadn't used queries yet so decided to do so here, both for practice and pragmatic reasons
+# I had not used queries yet so decided to do so here, both for practice and pragmatic reasons
 @app.route("/instruments/search")
 def search_for_instrument():
     results = []
