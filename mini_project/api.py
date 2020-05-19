@@ -6,6 +6,7 @@ from mini_project.classes.instruments import Instrument
 from mini_project.classes.registration import RegistrationForm, RegisterInstrument
 from mini_project.classes.mockDatabase import Users, Instruments
 from mini_project.modules.validators import Validator
+import validators
 import os.path
 import io
 
@@ -113,6 +114,24 @@ def assign_instrument_to_user(instrument_id, user_id):
     return app.response_class(response=json.dumps({'Status': 'Bad request'}), status=404, mimetype='application/json')
 
 
+@app.route("/instruments/<instrument_id>/video", methods=["PUT"])
+def add_video_to_instrument(instrument_id):
+    if Validator.instrument_exists(instrument_id):
+        try:
+            video = request.form.get('video')
+            # validate first that url is real and active, then check for string 'youtube' inside
+            if validators.url(video) and video.find("youtube"):
+                Instruments.update_item(instrument_id, 'video', video)
+                response = {"updated_instrument": Instruments.data.get(instrument_id)}
+            else:
+                response = {'Error': 'Upload must be active youtube video'}
+        except TypeError as e:
+            response = {'Error': f"{e}. Upload link with label 'video'"}
+        return app.response_class(response=json.dumps(response), status=200, mimetype="application/json")
+    return app.response_class(response=json.dumps({'Bad request': f"Instrument ID {instrument_id} does not exist"}),
+                              status=404, mimetype="application/json")
+
+
 @app.route("/instruments/<instrument_id>/image", methods=["PUT"])
 def upload_instrument_img(instrument_id):
     f = request.files['image']
@@ -131,7 +150,7 @@ def upload_instrument_img(instrument_id):
     return response
 
 
-@app.route("/instruments/<instrument_id>/image/<img_num>")
+@app.route("/instruments/<instrument_id>/image/<int:img_num>")
 def get_instrument_image(instrument_id, img_num):
     # user can input image 1 or 2 to get the first or second image, which I change into an int and -1 for index loc
     img_num = int(img_num - 1)
