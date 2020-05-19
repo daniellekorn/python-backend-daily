@@ -1,4 +1,4 @@
-from mini_project.classes.mockDatabase import Instruments, Users
+from mini_project.data.mockDatabase import Instruments, Users
 
 
 class Validators:

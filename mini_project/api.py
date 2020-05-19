@@ -4,7 +4,7 @@ from time import perf_counter
 from mini_project.classes.users import User
 from mini_project.classes.instruments import Instrument
 from mini_project.classes.registration import RegistrationForm, RegisterInstrument
-from mini_project.classes.mockDatabase import Users, Instruments
+from mini_project.data.mockDatabase import Users, Instruments
 from mini_project.modules.validators import Validator
 import validators
 import os.path

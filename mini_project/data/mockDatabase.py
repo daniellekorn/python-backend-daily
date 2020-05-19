@@ -1,7 +1,13 @@
+import json
+import os
+from pathlib import Path
+
+
 class MockDatabase:
 
-    def __init__(self):
+    def __init__(self, name):
         self.data = {}
+        self.name = name
 
     def add_item(self, obj):
         self.data[obj.get('_id_num')] = obj
@@ -23,10 +29,10 @@ class MockDatabase:
         self.data[obj_id][field].remove(sub_item)
         return self.data
 
-    # def persist_in_data(self):
-    #     with open('mydata.json', 'w') as f:
-    #         json.dump(team, f)
+    def persist_in_data(self):
+        with open(f'{Path(__file__).parent}{os.sep}{self.name}.json', 'w') as f:
+            json.dump(self.data, f)
 
 
-Users = MockDatabase()
-Instruments = MockDatabase()
+Users = MockDatabase('users')
+Instruments = MockDatabase('instruments')
