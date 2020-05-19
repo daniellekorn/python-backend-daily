@@ -13,4 +13,5 @@ class RegistrationForm(Form):
 
 class RegisterInstrument(Form):
     model = StringField('Model', [validators.Length(min=3, max=35)])
-    type = StringField('Type', [validators.Length(min=3, max=35)])
+    type = StringField('Type (i.e.: guitar, drums, etc.)', [validators.Length(min=3, max=35)])
+    username = StringField('Confirm username', [validators.Length(min=4, max=25)])

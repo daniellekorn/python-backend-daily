@@ -60,10 +60,16 @@ def register():
 def user_add_instrument():
     form = RegisterInstrument(request.form)
     if request.method == 'POST' and form.validate():
-        new_instrument = Instrument(form.name.data, form.model.data, form.type.data)
+        user_info = form.username.data
+        new_instrument = Instrument(form.type.data, form.model.data)
         instruments[new_instrument.get('id_num')] = new_instrument
-        flash('Thanks for registering')
-        return "success"
+        for user in users:
+            if users[user]['username'] == user_info:
+                user_id = users[user]['user_id']
+                assign_instrument_to_user(new_instrument.get('id_num'), user_id)
+                return app.response_class(response=json.dumps({'updated profile': users[user_id]}), status=200,
+                                          mimetype='application/json')
+        return "Username invalid: only registered users can submit instruments"
     return render_template('instrument.html', form=form)
 
 
@@ -75,12 +81,15 @@ def get_or_delete_user_by_id(user_id):
     return jsonify({'user': users[user_id]})
 
 
+# add validation here
 @app.route("/instrument/<instrument_id>/user/<user_id>", methods=['PUT'])
 def assign_instrument_to_user(instrument_id, user_id):
     users[user_id]['instruments'][instrument_id] = instruments[instrument_id]
     response = {"updated_user": users[user_id]}
     return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
 
+
+# add video to instrument validation here
 
 if __name__ == "__main__":
     app.secret_key = b'testing'
