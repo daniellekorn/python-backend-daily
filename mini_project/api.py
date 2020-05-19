@@ -5,6 +5,7 @@ from mini_project.classes.instruments import Instrument
 from mini_project.classes.registration import RegistrationForm, RegisterInstrument
 from mini_project.classes.mockDatabase import Users, Instruments
 from mini_project.modules.validators import validator
+from time import perf_counter
 
 app = Flask(__name__)
 
@@ -104,6 +105,20 @@ def assign_instrument_to_user(instrument_id, user_id):
     Users.append_new_item(user_id, 'instruments', instrument_id)
     response = {"updated_user": Users.data.get(user_id)}
     return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+
+
+@app.route("/instruments/search")
+def search_for_instrument():
+    results = []
+    start_time = perf_counter()
+    search_query = request.args.get('search')
+    for item in Instruments.data:
+        instrument = Instruments.data[item]
+        if instrument.get('type').lower() == search_query.lower():
+            results.append(instrument)
+    end_time = perf_counter()
+    search_time = end_time - start_time
+    return jsonify({'Search results': results, 'Total duration of search': search_time})
 
 
 if __name__ == "__main__":
