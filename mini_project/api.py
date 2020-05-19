@@ -65,18 +65,52 @@ def register_instrument():
 @app.route("/instruments/<instrument_id>", methods=["GET",  "DELETE"])
 def get_or_delete_instrument_by_id(instrument_id):
     if request.method == "DELETE":
-        Instruments.delete_item(instrument_id)
-        response = {'deleted': instrument_id}
-        return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+        if Validator.instrument_exists():
+            Instruments.delete_item(instrument_id)
+            response = {'deleted': instrument_id}
+            return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+        else:
+            return app.response_class(response=json.dumps({'Error': f'Instrument ID {instrument_id} does not exist'}),
+                                      status=404, mimetype='application/json')
     return jsonify({'instrument': Instruments.data.get(instrument_id)})
 
 
 @app.route("/users/<user_id>", methods=["GET", "DELETE"])
 def get_or_delete_user_by_id(user_id):
     if request.method == "DELETE":
-        Users.delete_item(user_id)
-        return app.response_class(response=json.dumps({'deleted': user_id}), status=200, mimetype='application/json')
+        if Validator.user_exists(user_id):
+            Users.delete_item(user_id)
+            return app.response_class(response=json.dumps({'deleted': user_id}), status=200,
+                                      mimetype='application/json')
+        else:
+            return app.response_class(response=json.dumps({'Error': f'User ID {user_id} does not exist'}), status=404,
+                                      mimetype='application/json')
     return jsonify({'user': Users.data.get(user_id)})
+
+
+@app.route("/instruments/user/<user_id>", methods=["GET"])
+def get_all_instruments_for_user(user_id):
+    if Validator.user_exists():
+        return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
+    return app.response_class(response=json.dumps({'Error': f'User ID {user_id} does not exist'}), status=404,
+                              mimetype='application/json')
+
+
+@app.route("/instruments/user/<user_id>/<instrument_id>", methods=["PUT"])
+def delete_instrument_for_user(user_id, instrument_id):
+    if Validator.user_exists(user_id) and Validator.instrument_exists():
+        Users.delete_sub_item(user_id, 'instruments', instrument_id)
+        return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
+    return app.response_class(response=json.dumps({'Status': 'Bad request'}), status=404, mimetype='application/json')
+
+
+@app.route("/instruments/<instrument_id>/users/<user_id>", methods=['PUT'])
+def assign_instrument_to_user(instrument_id, user_id):
+    if Validator.user_exists(user_id) and Validator.instrument_exists(instrument_id):
+        Users.append_new_item(user_id, 'instruments', instrument_id)
+        response = {"updated_user": Users.data.get(user_id)}
+        return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+    return app.response_class(response=json.dumps({'Status': 'Bad request'}), status=404, mimetype='application/json')
 
 
 @app.route("/instruments/<instrument_id>/image", methods=["PUT"])
@@ -114,29 +148,19 @@ def get_instrument_image(instrument_id, img_num):
         return app.response_class(response=json.dumps(response), status=404, mimetype="application/json")
 
 
-@app.route("/instruments/user/<user_id>", methods=["GET"])
-def get_all_instruments_for_user(user_id):
-    return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
-
-
-@app.route("/instruments/user/<user_id>/<instrument_id>", methods=["PUT"])
-def delete_instrument_for_user(user_id, instrument_id):
-    Users.delete_sub_item(user_id, 'instruments', instrument_id)
-    return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
-
-
-@app.route("/instruments/<instrument_id>/users/<user_id>", methods=['PUT'])
-def assign_instrument_to_user(instrument_id, user_id):
-    Users.append_new_item(user_id, 'instruments', instrument_id)
-    response = {"updated_user": Users.data.get(user_id)}
-    return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
-
-
+# Noam mentioned that search functionality is best to do with actual search box form or query params, not path params
+# I hadn't used queries yet so decided to do so here, both for practice and pragmatic reasons
 @app.route("/instruments/search")
 def search_for_instrument():
     results = []
     start_time = perf_counter()
-    search_query = request.args.get('search')
+    # check that search query is present and assign it value
+    try:
+        search_query = request.args.get('search')
+    except Exception as e:
+        response = {f"'Error': {e}"}
+        return app.response_class(response=json.dumps(response), status=404, mimetype="application/json")
+    # actually run search based on Instruments.data (used try in case it is null)
     for item in Instruments.data:
         instrument = Instruments.data[item]
         if instrument.get('type').lower() == search_query.lower():
