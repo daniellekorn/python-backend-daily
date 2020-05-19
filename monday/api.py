@@ -9,6 +9,11 @@ users = {}
 instruments = {}
 
 
+@app.route("/")
+def welcome():
+    return render_template('index.html')
+
+
 @app.route("/instruments", methods=['GET', 'POST'])
 def get_or_add_instruments():
     if request.method == "POST":
