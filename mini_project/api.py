@@ -106,7 +106,7 @@ def delete_instrument_for_user(user_id, instrument_id):
     return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
 
 
-@app.route("/instrument/<instrument_id>/user/<user_id>", methods=['PUT'])
+@app.route("/instruments/<instrument_id>/users/<user_id>", methods=['PUT'])
 def assign_instrument_to_user(instrument_id, user_id):
     Users.append_new_item(user_id, 'instruments', instrument_id)
     response = {"updated_user": Users.data.get(user_id)}
