@@ -11,15 +11,19 @@
 <body>
     <div class="row container justify-content-center">
         <div class="col-md-6 offset-md-3">
-            <h1>Welcome</h1>
+            <h1 class="mt-5">Welcome</h1>
             <p>Our venue is dedicated to keeping track of who is playing and what they are playing with.
             To facilitate our management all of you musicians and your instruments, please register.</p>
-            <button type="submit" class="btn btn-primary">User Registration</button>
+            <button type="submit" class="btn btn-primary" onclick="window.location.href='{{ url_for('register') }}'">
+                User Registration</button>
             <h5 class="mt-5">For existing users...</h5>
             <p>You can easily register an instrument by clicking the button below. If you plan to have many, please feel
                 free to submit as many instrument registration forms as needed. We are here to support you and all of
                 your many talents!</p>
-            <button type="submit" class="btn btn-success">Register an Instrument</button>
+            <button type="submit" class="btn btn-success"
+                    onclick="window.location.href='{{ url_for('user_add_instrument') }}'">
+                Register an Instrument
+            </button>
         </div>
     </div>
 </body>
