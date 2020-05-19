@@ -21,9 +21,8 @@ class Validators:
     @staticmethod
     def instrument_exists(instrument_id):
         if Instruments.data.get(instrument_id):
-            print("true")
             return True
         return False
 
 
-validator = Validators()
+Validator = Validators()
