@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, json, render_template, redirect, flash, url_for
+from werkzeug.utils import secure_filename
 from mini_project.classes.users import User
 from mini_project.classes.instruments import Instrument
 from mini_project.classes.registration import RegistrationForm, RegisterInstrument
@@ -34,14 +35,16 @@ def get_or_delete_instrument_by_id(instrument_id):
 
 
 @app.route("/instrument/<instrument_id>/upload", methods=["POST"])
-def upload_instrument_img():
-    f = request.files[&#39;data&#39;]
-    f.save(&#39;images/uploaded_file.jpg&#39;)
-    response = app.response_class(
-    response=json.dumps({&quot;status&quot;: &quot;ok&quot;}),
-    status=200,
-    mimetype=&#39;application/json&#39;
-    )
+def upload_instrument_img(instrument_id):
+    f = request.files['image']
+    filename = secure_filename(f.filename)
+    f.save('media/instrument_images/' + filename)
+    if validator.instrument_exists(instrument_id):
+        instruments[instrument_id]['image'] = filename
+        response_info = {"successfully uploaded file": filename}
+    else:
+        response_info = {"Failure": f"Instrument with ID '{instrument_id}' does not exist."}
+    response = app.response_class(response=json.dumps(response_info), status=200, mimetype="application/json")
     return response
 
 
