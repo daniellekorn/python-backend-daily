@@ -95,8 +95,14 @@ def upload_instrument_img(instrument_id):
     return response
 
 
-@app.route("/instruments/user/<user_id>")
+@app.route("/instruments/user/<user_id>", methods=["GET"])
 def get_all_instruments_for_user(user_id):
+    return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
+
+
+@app.route("/instruments/user/<user_id>/<instrument_id>", methods=["PUT"])
+def delete_instrument_for_user(user_id, instrument_id):
+    Users.delete_sub_item(user_id, 'instruments', instrument_id)
     return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
 
 

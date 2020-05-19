@@ -1,28 +1,27 @@
 class MockDatabase:
-    data = {}
 
     def __init__(self):
-        pass
+        self.data = {}
 
-    @classmethod
-    def add_item(cls, obj):
-        cls.data[obj.get('id_num')] = obj
-        return cls.data
+    def add_item(self, obj):
+        self.data[obj.get('id_num')] = obj
+        return self.data
 
-    @classmethod
-    def delete_item(cls, obj_id):
-        cls.data.pop(obj_id, None)
-        return cls.data
+    def delete_item(self, obj_id):
+        self.data.pop(obj_id, None)
+        return self.data
 
-    @classmethod
-    def update_item(cls, obj_id, field, new_info):
-        cls.data[obj_id][field] = new_info
-        return cls.data
+    def update_item(self, obj_id, field, new_info):
+        self.data[obj_id][field] = new_info
+        return self.data
 
-    @classmethod
-    def append_new_item(cls, obj_id, field, new_info):
-        cls.data[obj_id][field].append(new_info)
-        return cls.data
+    def append_new_item(self, obj_id, field, new_info):
+        self.data[obj_id][field].append(new_info)
+        return self.data
+
+    def delete_sub_item(self, obj_id, field, sub_item):
+        self.data[obj_id][field].remove(sub_item)
+        return self.data
 
 
 Users = MockDatabase()
