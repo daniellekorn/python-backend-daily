@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify, json
+from flask import Flask, request, jsonify, json, render_template, redirect, flash, url_for
 from monday.classes.users import User
 from monday.classes.instruments import Instrument
+from monday.classes.registration import RegistrationForm
 
 app = Flask(__name__)
 
@@ -42,6 +43,17 @@ def get_or_add_users():
         response = {"new_user": new_user}
         return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
     return jsonify({'users': users})
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        new_user = User(form.username.data, form.email.data, form.password.data)
+        users[new_user.get('user_id')] = new_user
+        flash('Thanks for registering')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
 
 @app.route("/users/<user_id>", methods=["GET", "DELETE"])

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous">
+    <title></title>
+</head>
+<body>
+    {% macro render_field(field) %}
+      <dt>{{ field.label }}
+      <dd>{{ field(**kwargs)|safe }}
+      {% if field.errors %}
+        <ul class="alert alert-danger list-unstyled mt-2 p-1">
+        {% for error in field.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      </dd>
+    {% endmacro %}
+</body>
+</html>
