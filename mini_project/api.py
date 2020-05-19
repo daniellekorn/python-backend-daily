@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from mini_project.classes.users import User
 from mini_project.classes.instruments import Instrument
 from mini_project.classes.registration import RegistrationForm, RegisterInstrument
-from mini_project.classes.mockDatabase import users, instruments
+from mini_project.classes.mockDatabase import Users, Instruments
 from mini_project.modules.validators import validator
 
 app = Flask(__name__)
