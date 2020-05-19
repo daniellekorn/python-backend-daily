@@ -19,28 +19,28 @@ def get_or_add_instruments():
     if request.method == "POST":
         content = request.form
         new_instrument = Instrument(content.get('model'), content.get('type'))
-        instruments[new_instrument.get('id_num')] = new_instrument
+        Instruments.add_item(new_instrument)
         response = {"new_instrument": new_instrument}
         return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
-    return jsonify({'instruments': instruments})
+    return jsonify({'instruments': Instruments.data})
 
 
 @app.route("/instruments/<instrument_id>", methods=["GET",  "DELETE"])
 def get_or_delete_instrument_by_id(instrument_id):
     if request.method == "DELETE":
-        instruments.pop(instrument_id, None)
-        return app.response_class(response=json.dumps({'deleted': instrument_id}), status=200,
-                                  mimetype='application/json')
-    return jsonify({'instrument': instruments[instrument_id]})
+        Instruments.delete_item(instrument_id)
+        response = {'deleted': instrument_id}
+        return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
+    return jsonify({'instrument': Instruments.data.get(instrument_id)})
 
 
-@app.route("/instrument/<instrument_id>/upload", methods=["POST"])
+@app.route("/instruments/<instrument_id>/upload", methods=["POST"])
 def upload_instrument_img(instrument_id):
     f = request.files['image']
     filename = secure_filename(f.filename)
     f.save('media/instrument_images/' + filename)
     if validator.instrument_exists(instrument_id):
-        instruments[instrument_id]['image'] = filename
+        Instruments.update_item(instrument_id, 'image', filename)
         response_info = {"successfully uploaded file": filename}
     else:
         response_info = {"Failure": f"Instrument with ID '{instrument_id}' does not exist."}

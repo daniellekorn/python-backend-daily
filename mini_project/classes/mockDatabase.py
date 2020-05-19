@@ -10,13 +10,13 @@ class MockDatabase:
         return cls.data
 
     @classmethod
-    def delete_item(cls, obj):
-        cls.data[obj.get('id_num')] = obj
+    def delete_item(cls, obj_id):
+        cls.data.pop(obj_id, None)
         return cls.data
 
     @classmethod
-    def update_item(cls, obj):
-        cls.data[obj.get('id_num')] = obj
+    def update_item(cls, obj_id, field, new_info):
+        cls.data[obj_id][field] = new_info
         return cls.data
 
 

@@ -1,4 +1,4 @@
-from mini_project.classes.mockDatabase import instruments, users
+from mini_project.classes.mockDatabase import Instruments, Users
 
 
 class Validators:
@@ -7,13 +7,14 @@ class Validators:
 
     @staticmethod
     def user_exists(user_id):
-        if users.get(user_id):
+        if Users.data.get(user_id):
             return True
         return False
 
     @staticmethod
     def instrument_exists(instrument_id):
-        if instruments.get(instrument_id):
+        if Instruments.data.get(instrument_id):
+            print("true")
             return True
         return False
 
