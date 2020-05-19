@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous">
+    <title>Register</title>
+</head>
+<body>
+    {% from "_formhelpers.html" import render_field %}
+    <div class="row container justify-content-center">
+        <form method=post class="col-md-6 offset-md-3">
+            <h3>If you will be bringing your own instrument, please register it here.</h3>
+            <div class="form-group mt-5">
+                  <dl>
+                      {{ render_field(form.type) }}
+                      <p>i.e.: Guitar, drums, flute, etc.</p>
+                      {{ render_field(form.model) }}
+                  </dl>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

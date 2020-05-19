@@ -9,3 +9,8 @@ class RegistrationForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+
+
+class RegisterInstrument(Form):
+    model = StringField('Model', [validators.Length(min=3, max=35)])
+    type = StringField('Type', [validators.Length(min=3, max=35)])

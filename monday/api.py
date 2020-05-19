@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, json, render_template, redirect, flash, url_for
 from monday.classes.users import User
 from monday.classes.instruments import Instrument
-from monday.classes.registration import RegistrationForm
+from monday.classes.registration import RegistrationForm, RegisterInstrument
 
 app = Flask(__name__)
 
@@ -52,8 +52,19 @@ def register():
         new_user = User(form.username.data, form.email.data, form.password.data, {})
         users[new_user.get('user_id')] = new_user
         flash('Thanks for registering')
-        return "success"
+        return redirect(url_for('user_add_instrument'))
     return render_template('register.html', form=form)
+
+
+@app.route('/register/instrument', methods=['GET', 'POST'])
+def user_add_instrument():
+    form = RegisterInstrument(request.form)
+    if request.method == 'POST' and form.validate():
+        new_instrument = Instrument(form.name.data, form.model.data, form.type.data)
+        instruments[new_instrument.get('id_num')] = new_instrument
+        flash('Thanks for registering')
+        return "success"
+    return render_template('instrument.html', form=form)
 
 
 @app.route("/users/<user_id>", methods=["GET", "DELETE"])
