@@ -14,14 +14,22 @@ def welcome():
     return render_template('index.html')
 
 
-@app.route("/instruments", methods=['GET'])
-def get_instruments():
-    return jsonify({'instruments': Instruments.data})
-
-
 @app.route("/users", methods=["GET", "POST"])
-def get_users():
+def get_or_add_users():
+    if request.method == "POST":
+        content = request.form
+        new_user = User(content.get('username'), content.get('email'), content.get('password'), [])
+        Users.add_item(new_user)
     return jsonify({'users': Users.data})
+
+
+@app.route("/instruments", methods=['GET', 'POST'])
+def get_or_add_instruments():
+    if request.method == "POST":
+        content = request.form
+        new_instrument = Instrument(content.get('type'), content.get('model'), [])
+        Instruments.add_item(new_instrument)
+    return jsonify({'instruments': Instruments.data})
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -40,7 +48,7 @@ def register_instrument():
     form = RegisterInstrument(request.form)
     if request.method == 'POST' and form.validate():
         user_name = form.username.data
-        new_instrument = Instrument(form.type.data, form.model.data)
+        new_instrument = Instrument(form.type.data, form.model.data, [])
         Instruments.add_item(new_instrument)
         user_id = validator.get_user_id_by_name(user_name)
         if user_id:
@@ -74,8 +82,12 @@ def upload_instrument_img(instrument_id):
     filename = secure_filename(f.filename)
     f.save('media/instrument_images/' + filename)
     if validator.instrument_exists(instrument_id):
-        Instruments.update_item(instrument_id, 'image', filename)
-        response_info = {"successfully uploaded file": filename}
+        instrument_images = Instruments.data.get(instrument_id)['instruments']
+        if len(instrument_images) > 1:
+            response_info = {"Failure": f"Instrument with ID '{instrument_id}' already has max number of images (2)."}
+        else:
+            Instruments.append_new_item(instrument_id, 'image', filename)
+            response_info = {"successfully uploaded file": filename}
     else:
         response_info = {"Failure": f"Instrument with ID '{instrument_id}' does not exist."}
     response = app.response_class(response=json.dumps(response_info), status=200, mimetype="application/json")
@@ -84,7 +96,7 @@ def upload_instrument_img(instrument_id):
 
 @app.route("/instruments/user/<user_id>")
 def get_all_instruments_for_user(user_id):
-    return jsonify({'users_instruments': Users.data[user_id]['instruments']})
+    return jsonify({'users_instruments': Users.data.get(user_id)['instruments']})
 
 
 @app.route("/instrument/<instrument_id>/user/<user_id>", methods=['PUT'])

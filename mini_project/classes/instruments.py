@@ -3,6 +3,6 @@ from mini_project.modules.randomString import random_string
 
 class Instrument(dict):
 
-    def __init__(self, type, model):
-        dict.__init__(self, type=type, model=model, id_num=random_string())
+    def __init__(self, type, model, images):
+        dict.__init__(self, type=type, model=model, images=images, id_num=random_string())
 
