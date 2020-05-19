@@ -23,7 +23,8 @@ def get_or_add_instruments():
 def get_or_delete_instrument_by_id(instrument_id):
     if request.method == "DELETE":
         instruments.pop(instrument_id, None)
-        return app.response_class(response=json.dumps({'deleted': 'success'}), status=200, mimetype='application/json')
+        return app.response_class(response=json.dumps({'deleted': instrument_id}), status=200,
+                                  mimetype='application/json')
     return jsonify({'instrument': instruments[instrument_id]})
 
 
@@ -43,11 +44,11 @@ def get_or_add_users():
     return jsonify({'users': users})
 
 
-@app.route("/users/<user_id>")
+@app.route("/users/<user_id>", methods=["GET", "DELETE"])
 def get_or_delete_user_by_id(user_id):
     if request.method == "DELETE":
         users.pop(user_id, None)
-        return app.response_class(response=json.dumps({'deleted': 'success'}), status=200, mimetype='application/json')
+        return app.response_class(response=json.dumps({'deleted': user_id}), status=200, mimetype='application/json')
     return jsonify({'user': users[user_id]})
 
 
