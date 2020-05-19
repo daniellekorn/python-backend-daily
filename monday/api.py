@@ -8,13 +8,22 @@ users = {}
 instruments = {}
 
 
-@app.route("/instruments")
-def get_all_instruments():
+@app.route("/instruments", methods=['GET', 'POST'])
+def get_or_add_instruments():
+    if request.method == "POST":
+        content = request.form
+        new_instrument = Instrument(content.get('name'), content.get('model'), content.get('type'))
+        instruments[new_instrument.get('id_num')] = new_instrument
+        response = {"new_instrument": new_instrument}
+        return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
     return jsonify({'instruments': instruments})
 
 
-@app.route("/instruments/<instrument_id>")
-def get_instrument_by_id(instrument_id):
+@app.route("/instruments/<instrument_id>", methods=["GET",  "DELETE"])
+def get_or_delete_instrument_by_id(instrument_id):
+    if request.method == "DELETE":
+        instruments.pop(instrument_id, None)
+        return app.response_class(response=json.dumps({'deleted': 'success'}), status=200, mimetype='application/json')
     return jsonify({'instrument': instruments[instrument_id]})
 
 
@@ -23,33 +32,23 @@ def get_all_instruments_for_user(user_id):
     return jsonify({'users_instruments': users[user_id]['instruments']})
 
 
-@app.route("/instruments", methods=['POST'])
-def add_instrument():
-    content = request.form
-    new_instrument = Instrument(content.get('name'), content.get('model'), content.get('type'))
-    instruments[new_instrument.get('id_num')] = new_instrument
-    response = {"new_instrument": new_instrument}
-    return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
-
-
-@app.route("/users")
-def get_all_users():
-    print(users)
+@app.route("/users", methods=["GET", "POST"])
+def get_or_add_users():
+    if request.method == "POST":
+        content = request.form
+        new_user = User(content.get('name'), content.get('title'), {})
+        users[new_user.get('user_id')] = new_user
+        response = {"new_user": new_user}
+        return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
     return jsonify({'users': users})
 
 
 @app.route("/users/<user_id>")
-def get_user_by_id(user_id):
+def get_or_delete_user_by_id(user_id):
+    if request.method == "DELETE":
+        users.pop(user_id, None)
+        return app.response_class(response=json.dumps({'deleted': 'success'}), status=200, mimetype='application/json')
     return jsonify({'user': users[user_id]})
-
-
-@app.route("/users", methods=['POST'])
-def add_user():
-    content = request.form
-    new_user = User(content.get('name'), content.get('title'), {})
-    users[new_user.get('user_id')] = new_user
-    response = {"new_user": new_user}
-    return app.response_class(response=json.dumps(response), status=200, mimetype='application/json')
 
 
 @app.route("/instrument/<instrument_id>/user/<user_id>", methods=['PUT'])
