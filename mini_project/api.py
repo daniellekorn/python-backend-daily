@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify, json, render_template, redirect, flash, url_for
-from monday.classes.users import User
-from monday.classes.instruments import Instrument
-from monday.classes.registration import RegistrationForm, RegisterInstrument
+from mini_project.classes.users import User
+from mini_project.classes.instruments import Instrument
+from mini_project.classes.registration import RegistrationForm, RegisterInstrument
+from mini_project.classes.mockDatabase import users, instruments
+from mini_project.modules.validators import validator
 
 app = Flask(__name__)
-
-users = {}
-instruments = {}
 
 
 @app.route("/")
@@ -32,6 +31,18 @@ def get_or_delete_instrument_by_id(instrument_id):
         return app.response_class(response=json.dumps({'deleted': instrument_id}), status=200,
                                   mimetype='application/json')
     return jsonify({'instrument': instruments[instrument_id]})
+
+
+@app.route("/instrument/<instrument_id>/upload", methods=["POST"])
+def upload_instrument_img():
+    f = request.files[&#39;data&#39;]
+    f.save(&#39;images/uploaded_file.jpg&#39;)
+    response = app.response_class(
+    response=json.dumps({&quot;status&quot;: &quot;ok&quot;}),
+    status=200,
+    mimetype=&#39;application/json&#39;
+    )
+    return response
 
 
 @app.route("/instruments/user/<user_id>")

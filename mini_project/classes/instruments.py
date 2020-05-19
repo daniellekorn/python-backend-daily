@@ -1,4 +1,4 @@
-from monday.modules.randomString import random_string
+from mini_project.modules.randomString import random_string
 
 
 class Instrument(dict):
