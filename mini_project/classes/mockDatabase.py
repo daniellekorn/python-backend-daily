@@ -19,6 +19,11 @@ class MockDatabase:
         cls.data[obj_id][field] = new_info
         return cls.data
 
+    @classmethod
+    def append_new_item(cls, obj_id, field, new_info):
+        cls.data[obj_id][field].append(new_info)
+        return cls.data
+
 
 Users = MockDatabase()
 Instruments = MockDatabase()
