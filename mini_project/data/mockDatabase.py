@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from pathlib import Path
 
 
@@ -8,6 +9,7 @@ class MockDatabase:
     def __init__(self, name):
         self.data = {}
         self.name = name
+        self.persist_as_json()
 
     def add_item(self, obj):
         self.data[obj.get('_id_num')] = obj
@@ -29,9 +31,11 @@ class MockDatabase:
         self.data[obj_id][field].remove(sub_item)
         return self.data
 
-    def persist_in_data(self):
-        with open(f'{Path(__file__).parent}{os.sep}{self.name}.json', 'w') as f:
-            json.dump(self.data, f)
+    def persist_as_json(self):
+        while True:
+            with open(f'{Path(__file__).parent}{os.sep}{self.name}.json', 'w') as f:
+                json.dump(self.data, f)
+                time.sleep(60)
 
 
 Users = MockDatabase('users')
